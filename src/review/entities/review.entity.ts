@@ -22,7 +22,7 @@ export class Review {
   @CreateDateColumn()
   time: Date;
 
-  @ManyToOne(() => Course, (course) => course.reviews, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Course, (course) => course.reviews)
   @JoinColumn({ name: 'courseId' })
   course: Course; // This defines the relationship to fetch the course
 }

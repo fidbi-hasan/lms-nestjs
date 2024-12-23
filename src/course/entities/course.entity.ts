@@ -30,7 +30,7 @@ export class Course {
   teacherId: number;
 
   // Define the ManyToOne relationship (Many courses can have one teacher)
-  @ManyToOne(() => User, user => user.courses, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, user => user.courses)
   @JoinColumn({ name: 'teacherId' }) // Specify the column for the foreign key
   teacher: User;
 

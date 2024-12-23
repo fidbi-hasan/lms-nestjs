@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, UseGuards, Request, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -24,33 +24,29 @@ export class UserController {
     };
   }
 
-  @Get('profile')
-  @UseGuards(JwtAuthGuard) // Ensure the teacher is logged in
-  async findOne(@Request() req) {
-    const user = await this.userService.findOne(req.user.id);
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const user = await this.userService.findOne(+id);
     return {
       user,
-    };
+    }
   }
 
-  @Patch('edit-profile')
-  @UseGuards(JwtAuthGuard) // Ensure the teacher is logged in
-  async update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
-    const teacherId = req.user.id; 
-    const updatedTeacher = await this.userService.update(teacherId, updateUserDto);
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const data = await this.userService.update(+id, updateUserDto);
     return {
-      data: updatedTeacher,
-    };
+      message: 'profile info updated.',
+      data,
+    }
   }
 
-  @Delete('delete-profile')
-  @UseGuards(JwtAuthGuard)
-  async remove(@Request() req) {
-    const teacherId = req.user.id; 
-    await this.userService.remove(teacherId);
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    await this.userService.remove(+id);
     return {
-      message: 'Account has been deleted.',
-    };
+      message: 'user deleted.',
+    }
   }
 
 }

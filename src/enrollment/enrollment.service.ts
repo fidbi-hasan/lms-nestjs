@@ -25,7 +25,7 @@ export class EnrollmentService {
     return enrollments;
   }
 
-  // Enroll a student into a course (mocking the student data for testing purposes)
+  // Enroll a student into a course (test)
   async enrollStudent(courseId: number) {
     // Dynamically generate a new mock student ID and name.
     const studentId = Date.now(); // Use timestamp as a unique student ID for simplicity
@@ -35,7 +35,7 @@ export class EnrollmentService {
       courseId,
       studentId,
       studentName,
-      courseStatus: 'ongoing', // You can change the status based on your requirement
+      courseStatus: 'ongoing', 
       enrollmentDate: new Date(),
     });
   

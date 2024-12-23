@@ -17,12 +17,12 @@ export class AuthController {
     return this.authService.login(loginDto); // Return JWT token after login
   }
 
-  // New route for generating mock tokens
+  // Test
   @Post('mock-token')
   generateMockToken(@Body() payload: any) {
     const token = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET, // Use the server's configured secret
-      expiresIn: '1h', // Token expiration time
+      secret: process.env.JWT_SECRET, 
+      expiresIn: '1h', 
     });
     return { token };
   }
