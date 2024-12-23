@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service'; // Import UserService to validate the user
+import { UserService } from '../user/user.service'; 
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
@@ -17,14 +17,14 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    const payload = { email: user.email, sub: user.id }; // Payload for the JWT token
+    const payload = { email: user.email, sub: user.id }; 
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET, // Explicitly use the secret key
-      expiresIn: '1h', // Optional: Set an expiration time
+      secret: process.env.JWT_SECRET, 
+      expiresIn: '1h', 
     });
 
     return {
-      access_token: accessToken, // Return the token
+      access_token: accessToken, 
     };
   }
 }

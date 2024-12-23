@@ -27,9 +27,9 @@ export class EnrollmentService {
 
   // Enroll a student into a course (test)
   async enrollStudent(courseId: number) {
-    // Dynamically generate a new mock student ID and name.
-    const studentId = Date.now(); // Use timestamp as a unique student ID for simplicity
-    const studentName = `Student #${studentId}`; // Generate a mock name based on the student ID
+    
+    const studentId = Date.now(); 
+    const studentName = `Student #${studentId}`; 
   
     const enrollment = this.enrollmentRepository.create({
       courseId,
