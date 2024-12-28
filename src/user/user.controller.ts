@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Delete, UseGuards, Request, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, UseGuards, Request, Param, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -24,29 +24,67 @@ export class UserController {
     };
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const user = await this.userService.findOne(+id);
+  @Get('view-profile')
+  @UseGuards(JwtAuthGuard)
+  async viewProfile(@Request() req: any) {
+    const userIdFromToken = req.user.sub; // Extract user ID from the token
+    const user = await this.userService.findOne(userIdFromToken);
     return {
       user,
-    }
+    };
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const data = await this.userService.update(+id, updateUserDto);
+
+
+  @Patch('edit-profile')
+  @UseGuards(JwtAuthGuard)
+  async editProfile(@Request() req: any, @Body() updateUserDto: UpdateUserDto) {
+    const userIdFromToken = req.user.sub; // Extract user ID from the token
+    const updatedUser = await this.userService.update(userIdFromToken, updateUserDto);
     return {
-      message: 'profile info updated.',
-      data,
-    }
+      message: 'Profile updated successfully.',
+      user: updatedUser,
+    };
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    await this.userService.remove(+id);
+
+  @Delete('delete-profile')
+  @UseGuards(JwtAuthGuard)
+  async deleteProfile(@Request() req: any) {
+    const userIdFromToken = req.user.sub; // Extract user ID from the token
+    await this.userService.remove(userIdFromToken);
     return {
-      message: 'user deleted.',
-    }
+      message: 'Profile deleted successfully.',
+    };
   }
+
+  // Generate OTP
+  @UseGuards(JwtAuthGuard)
+  @Post('generate-otp')
+  async generateOtp(@Request() req) {
+    const email = req.user.email; // Extract email from token
+    return this.userService.generateOtp(email);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('verify-otp')
+  async verifyOtp(@Request() req, @Body('otp') otp: string) {
+    const email = req.user.email; // Extract email from token
+    return this.userService.validateOtp(email, otp);
+  }
+
+
+  // Change Password
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  async changePassword(
+    @Request() req,
+    @Body('newPassword') newPassword: string,
+    @Body('otp') otp: string,
+  ) {
+    const email = req.user.email; // Extract email from token
+    return this.userService.changePassword(email, newPassword, otp);
+  }
+
 
 }
